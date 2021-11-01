@@ -1,0 +1,12 @@
+title = "Signal"
+
+gitRepoUrl = "https://github.com/raphtalia/Signal"
+gitSourceBranch = "main"
+
+classOrder = [
+  "Signal",
+  "Connection",
+]
+
+[footer]
+copyright = "Copyright © 2021 raphtalia"
