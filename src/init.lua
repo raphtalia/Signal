@@ -22,7 +22,6 @@ SIGNAL_METATABLE.__index = SIGNAL_METATABLE
 function Signal.new()
     local signal = {
         _connections = {},
-        _yields = {},
 
         Deferred = false,
     }
@@ -74,7 +73,14 @@ end
     @return ...
 ]=]
 function SIGNAL_METATABLE:Wait()
-    table.insert(self._yields, coroutine.running())
+    local thread = coroutine.running()
+    local connection
+
+    connection = self:Connect(function(...)
+        connection:Disconnect()
+        coroutine.resume(thread, ...)
+    end)
+
     return coroutine.yield()
 end
 
@@ -95,11 +101,6 @@ function SIGNAL_METATABLE:Fire(...)
             task.spawn(connection._callback, ...)
         end
     end
-
-    for _,thread in ipairs(self._yields) do
-        coroutine.resume(thread, ...)
-    end
-    table.clear(self._yields)
 end
 
 --[=[
